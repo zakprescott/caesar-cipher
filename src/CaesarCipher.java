@@ -56,7 +56,7 @@ public class CaesarCipher {
 
     private JPanel buildShiftPanel() {
         JPanel mainPanel = new JPanel();
-        // mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 
         JPanel subPanel = new JPanel();
         subPanel.setLayout(new BoxLayout(subPanel, BoxLayout.X_AXIS));
