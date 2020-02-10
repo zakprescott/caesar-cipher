@@ -15,7 +15,7 @@ public class CaesarCipher {
         JFrame frame = new JFrame("Caesar Cipher");
         frame.getContentPane().add(BorderLayout.CENTER, this.buildBackground());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(1000, 700);
+        frame.setSize(1000, 575);
         frame.setVisible(true);
     }
 
@@ -26,7 +26,6 @@ public class CaesarCipher {
         panel.add(BorderLayout.CENTER, this.buildEncodeDecodePanel());
         panel.add(BorderLayout.EAST, this.buildTextArea("Ciphertext"));
         panel.add(BorderLayout.SOUTH, this.buildShiftPanel());
-
         return panel;
     }
 
@@ -55,26 +54,46 @@ public class CaesarCipher {
     }
 
     private JPanel buildShiftPanel() {
-        JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setBackground(Color.darkGray);
+        panel.add(this.buildShiftLabel());
+        panel.add(this.buildShiftControlPanel());
+        panel.add(this.buildAToZLabel());
+        return panel;
+    }
 
-        JPanel subPanel = new JPanel();
-        subPanel.setLayout(new BoxLayout(subPanel, BoxLayout.X_AXIS));
+    private JLabel buildShiftLabel() {
+        JLabel shiftLabel = new JLabel("Shift");
+        shiftLabel.setFont(new Font("Monospaced", Font.BOLD, 24));
+        shiftLabel.setForeground(Color.white);
+        return shiftLabel;
+    }
+
+    private JPanel buildShiftControlPanel() {
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
 
         JButton minusButton = new JButton("-");
-        JTextField shift = new JTextField("0");
+        minusButton.setFont(new Font("Monospaced", Font.BOLD, 24));
+
+        JTextField shiftAmount = new JTextField("0");
+        shiftAmount.setFont(new Font("Monospaced", Font.BOLD, 24));
+
         JButton plusButton = new JButton("+");
+        plusButton.setFont(new Font("Monospaced", Font.BOLD, 24));
 
-        subPanel.add(minusButton);
-        subPanel.add(shift);
-        subPanel.add(plusButton);
+        panel.add(minusButton);
+        panel.add(shiftAmount);
+        panel.add(plusButton);
+        panel.setBackground(Color.darkGray);
+        return panel;
+    }
 
-        subPanel.setBackground(Color.darkGray);
-
-        mainPanel.add(BorderLayout.NORTH, new JLabel("Shift"));
-        mainPanel.add(BorderLayout.CENTER, subPanel);
-        mainPanel.add(BorderLayout.SOUTH, new JLabel("a " + RIGHT_ARROW + "a"));
-
-        return mainPanel;
+    private JLabel buildAToZLabel() {
+        JLabel aToZLabel = new JLabel("a " + RIGHT_ARROW + " a");
+        aToZLabel.setFont(new Font("Monospaced", Font.ITALIC, 24));
+        aToZLabel.setForeground(Color.white);
+        return aToZLabel;
     }
 }
