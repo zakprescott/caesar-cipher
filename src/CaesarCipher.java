@@ -94,7 +94,7 @@ public class CaesarCipher {
         minusButton.setFont(new Font("Monospaced", Font.BOLD, 24));
         minusButton.addActionListener(new MinusButtonListener());
 
-        shiftTextField = new JTextField("0", 3);
+        shiftTextField = new JTextField("0", 2);
         shiftTextField.setFont(new Font("Monospaced", Font.BOLD, 24));
 
         plusButton = new JButton("+");
