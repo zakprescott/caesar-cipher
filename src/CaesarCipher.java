@@ -1,7 +1,8 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
+import java.util.List;
+import java.util.ArrayList;
 
 public class CaesarCipher {
 
@@ -14,7 +15,7 @@ public class CaesarCipher {
     JButton plusButton;
     JButton encodeButton;
     JButton decodeButton;
-    JTextField shiftTextField;
+    JLabel shiftAmountLabel;
     JTextArea plainTextArea;
     JTextArea cipherTextArea;
     JLabel aToZLabel;
@@ -36,6 +37,8 @@ public class CaesarCipher {
         backgroundPanel.setBackground(Color.darkGray);
         plainTextArea = this.buildTextArea("Plaintext");
         cipherTextArea = this.buildTextArea("Ciphertext");
+        plainTextArea.addInputMethodListener(new PlainTextAreaListener());
+        cipherTextArea.addInputMethodListener(new CipherTextAreaListener());
         backgroundPanel.add(BorderLayout.WEST, plainTextArea);
         backgroundPanel.add(BorderLayout.CENTER, this.buildEncodeDecodePanel());
         backgroundPanel.add(BorderLayout.EAST, cipherTextArea);
@@ -94,15 +97,16 @@ public class CaesarCipher {
         minusButton.setFont(new Font("Monospaced", Font.BOLD, 24));
         minusButton.addActionListener(new MinusButtonListener());
 
-        shiftTextField = new JTextField("0", 2);
-        shiftTextField.setFont(new Font("Monospaced", Font.BOLD, 24));
+        shiftAmountLabel = new JLabel(" 0 ");
+        shiftAmountLabel.setForeground(Color.white);
+        shiftAmountLabel.setFont(new Font("Monospaced", Font.BOLD, 24));
 
         plusButton = new JButton("+");
         plusButton.setFont(new Font("Monospaced", Font.BOLD, 24));
         plusButton.addActionListener(new PlusButtonListener());
 
         shiftControlPanel.add(minusButton);
-        shiftControlPanel.add(shiftTextField);
+        shiftControlPanel.add(shiftAmountLabel);
         shiftControlPanel.add(plusButton);
         shiftControlPanel.setBackground(Color.darkGray);
 
@@ -116,12 +120,33 @@ public class CaesarCipher {
         return aToZLabel;
     }
 
+    class PlainTextAreaListener implements InputMethodListener {
+        public void inputMethodTextChanged(InputMethodEvent event) {
+            plainTextArea.setText("Input method text changed");
+        }
+
+        public void caretPositionChanged(InputMethodEvent event) {
+            plainTextArea.setText("Caret position changed");
+        }
+    }
+
+    class CipherTextAreaListener implements InputMethodListener {
+        public void inputMethodTextChanged(InputMethodEvent event) {
+            cipherTextArea.setText("Input method text changed");
+        }
+
+        public void caretPositionChanged(InputMethodEvent event) {
+            cipherTextArea.setText("Caret position changed");
+        }
+    }
+
     class MinusButtonListener implements ActionListener {
         public void actionPerformed(ActionEvent event) {
-            int shiftAmount = Integer.parseInt(shiftTextField.getText());
+            int shiftAmount = Integer.parseInt(shiftAmountLabel.getText().trim());
 
             if (shiftAmount > 0) {
-                shiftTextField.setText(String.valueOf(--shiftAmount));
+                shiftAmountLabel.setText(" " + String.valueOf(--shiftAmount) + " ");
+
                 if (shiftAmount >= 0) {
                     aToZLabel.setText("a " + RIGHT_ARROW + " " + alphabet.charAt(shiftAmount));
                 } else {
@@ -133,10 +158,11 @@ public class CaesarCipher {
 
     class PlusButtonListener implements ActionListener {
         public void actionPerformed(ActionEvent event) {
-            int shiftAmount = Integer.parseInt(shiftTextField.getText());
+            int shiftAmount = Integer.parseInt(shiftAmountLabel.getText().trim());
 
             if (shiftAmount < 25) {
-                shiftTextField.setText(String.valueOf(++shiftAmount));
+                shiftAmountLabel.setText(" " + String.valueOf(++shiftAmount) + " ");
+
                 if (shiftAmount >= 0) {
                     aToZLabel.setText("a " + RIGHT_ARROW + " " + alphabet.charAt(shiftAmount));
                 } else {
@@ -148,13 +174,80 @@ public class CaesarCipher {
 
     class EncodeButtonListener implements ActionListener {
         public void actionPerformed(ActionEvent event) {
-            cipherTextArea.setText("Message has been encoded!");
+            String encodedText = this.encodeText(plainTextArea.getText());
+            cipherTextArea.setFont(new Font("Monospaced", Font.PLAIN, 18));
+            cipherTextArea.setForeground(Color.black);
+            cipherTextArea.setText(encodedText);
+        }
+
+        private String encodeText(String plainText) {
+            List<Character> encodedText = new ArrayList<Character>();
+            int shiftAmount = Integer.parseInt(shiftAmountLabel.getText().trim());
+
+            for (int i = 0; i < plainText.length(); i++) {
+                char plainChar = plainText.charAt(i);
+
+                if (Character.isLetter(plainChar)) {
+                    int plainIndex = alphabet.indexOf(plainChar);
+                    int encodedIndex = plainIndex + shiftAmount;
+
+                    if (encodedIndex < 26) {
+                        encodedText.add(alphabet.charAt(encodedIndex));
+                    } else {
+                        encodedIndex = encodedIndex - 26;
+                        encodedText.add(alphabet.charAt(encodedIndex));
+                    }
+                } else {
+                    encodedText.add(plainChar);
+                }
+            }
+
+            StringBuilder encodedTextStringBuilder = new StringBuilder(encodedText.size());
+            for (Character ch : encodedText) {
+                encodedTextStringBuilder.append(ch);
+            }
+
+            return encodedTextStringBuilder.toString();
         }
     }
 
     class DecodeButtonListener implements ActionListener {
         public void actionPerformed(ActionEvent event) {
-            plainTextArea.setText("Message has been decoded!");
+            String decodedText = this.decodeText(cipherTextArea.getText());
+            plainTextArea.setFont(new Font("Monospaced", Font.PLAIN, 18));
+            plainTextArea.setForeground(Color.black);
+            plainTextArea.setText(decodedText);
+        }
+
+        private String decodeText(String encodedText) {
+            List<Character> plainText = new ArrayList<Character>();
+
+            int shiftAmount = Integer.parseInt(shiftAmountLabel.getText().trim());
+
+            for (int i = 0; i < encodedText.length(); i++) {
+                char encodedChar = encodedText.charAt(i);
+
+                if (Character.isLetter(encodedChar)) {
+                    int encodedIndex = alphabet.indexOf(encodedChar);
+                    int plainIndex = encodedIndex - shiftAmount;
+
+                    if (plainIndex >= 0) {
+                        plainText.add(alphabet.charAt(plainIndex));
+                    } else {
+                        plainIndex = plainIndex + 26;
+                        plainText.add(alphabet.charAt(plainIndex));
+                    }
+                } else {
+                    plainText.add(encodedChar);
+                }
+            }
+
+            StringBuilder plainTextStringBuilder = new StringBuilder(plainText.size());
+            for (Character ch : plainText) {
+                plainTextStringBuilder.append(ch);
+            }
+
+            return plainTextStringBuilder.toString();
         }
     }
 }
