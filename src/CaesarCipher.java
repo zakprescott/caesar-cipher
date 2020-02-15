@@ -129,6 +129,7 @@ public class CaesarCipher {
         public void mouseClicked(MouseEvent e) {
             if (plainTextArea.getText().equals("Plaintext")) {
                 plainTextArea.setText("");
+                plainTextArea.setFont(new Font("Monospaced", Font.PLAIN, 18));
                 plainTextArea.setForeground(Color.black);
                 plainTextArea.setEditable(true);
             }
@@ -151,6 +152,7 @@ public class CaesarCipher {
         public void mouseClicked(MouseEvent e) {
             if (cipherTextArea.getText().equals("Ciphertext")) {
                 cipherTextArea.setText("");
+                cipherTextArea.setFont(new Font("Monospaced", Font.PLAIN, 18));
                 cipherTextArea.setForeground(Color.black);
                 cipherTextArea.setEditable(true);
             }
