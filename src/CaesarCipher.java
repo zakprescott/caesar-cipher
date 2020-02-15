@@ -35,10 +35,13 @@ public class CaesarCipher {
     private JPanel buildBackgroundPanel() {
         JPanel backgroundPanel = new JPanel();
         backgroundPanel.setBackground(Color.darkGray);
+
         plainTextArea = this.buildTextArea("Plaintext");
+        plainTextArea.addMouseListener(new PlainTextAreaListener());
+
         cipherTextArea = this.buildTextArea("Ciphertext");
-        plainTextArea.addInputMethodListener(new PlainTextAreaListener());
-        cipherTextArea.addInputMethodListener(new CipherTextAreaListener());
+        cipherTextArea.addMouseListener(new CipherTextAreaListener());
+
         backgroundPanel.add(BorderLayout.WEST, plainTextArea);
         backgroundPanel.add(BorderLayout.CENTER, this.buildEncodeDecodePanel());
         backgroundPanel.add(BorderLayout.EAST, cipherTextArea);
@@ -50,6 +53,7 @@ public class CaesarCipher {
         JTextArea textArea = new JTextArea(text, 20, 35);
         textArea.setFont(new Font("Monospaced", Font.ITALIC, 18));
         textArea.setForeground(Color.lightGray);
+        textArea.setEditable(false);
         return textArea;
     }
 
@@ -58,11 +62,8 @@ public class CaesarCipher {
         encodeDecodePanel.setLayout(new BoxLayout(encodeDecodePanel, BoxLayout.Y_AXIS));
         encodeDecodePanel.setBackground(Color.darkGray);
 
-        encodeButton = new JButton("Encode " + RIGHT_ARROW);
-        decodeButton = new JButton(LEFT_ARROW + " Decode");
-
-        encodeButton.setFont(new Font("Monopaced", Font.BOLD, 16));
-        decodeButton.setFont(new Font("Monopaced", Font.BOLD, 16));
+        encodeButton = this.buildButton("Encode " + RIGHT_ARROW);
+        decodeButton = this.buildButton(LEFT_ARROW + " Decode");
 
         encodeButton.addActionListener(new EncodeButtonListener());
         decodeButton.addActionListener(new DecodeButtonListener());
@@ -71,6 +72,12 @@ public class CaesarCipher {
         encodeDecodePanel.add(decodeButton);
 
         return encodeDecodePanel;
+    }
+
+    private JButton buildButton(String text) {
+        JButton button = new JButton(text);
+        button.setFont(new Font("Monospaced", Font.BOLD, 24));
+        return button;
     }
 
     private JPanel buildShiftPanel() {
@@ -93,16 +100,14 @@ public class CaesarCipher {
         JPanel shiftControlPanel = new JPanel();
         shiftControlPanel.setLayout(new BoxLayout(shiftControlPanel, BoxLayout.X_AXIS));
 
-        minusButton = new JButton("-");
-        minusButton.setFont(new Font("Monospaced", Font.BOLD, 24));
+        minusButton = this.buildButton("-");
         minusButton.addActionListener(new MinusButtonListener());
 
         shiftAmountLabel = new JLabel(" 0 ");
         shiftAmountLabel.setForeground(Color.white);
         shiftAmountLabel.setFont(new Font("Monospaced", Font.BOLD, 24));
 
-        plusButton = new JButton("+");
-        plusButton.setFont(new Font("Monospaced", Font.BOLD, 24));
+        plusButton = this.buildButton("+");
         plusButton.addActionListener(new PlusButtonListener());
 
         shiftControlPanel.add(minusButton);
@@ -120,23 +125,48 @@ public class CaesarCipher {
         return aToZLabel;
     }
 
-    class PlainTextAreaListener implements InputMethodListener {
-        public void inputMethodTextChanged(InputMethodEvent event) {
-            plainTextArea.setText("Input method text changed");
+    class PlainTextAreaListener implements MouseListener {
+        public void mouseClicked(MouseEvent e) {
+            if (plainTextArea.getText().equals("Plaintext")) {
+                plainTextArea.setText("");
+                plainTextArea.setForeground(Color.black);
+                plainTextArea.setEditable(true);
+            }
         }
 
-        public void caretPositionChanged(InputMethodEvent event) {
-            plainTextArea.setText("Caret position changed");
+        public void mouseEntered(MouseEvent e) {
+        }
+
+        public void mouseExited(MouseEvent e) {
+        }
+
+        public void mousePressed(MouseEvent e) {
+        }
+
+        public void mouseReleased(MouseEvent e) {
         }
     }
 
-    class CipherTextAreaListener implements InputMethodListener {
-        public void inputMethodTextChanged(InputMethodEvent event) {
-            cipherTextArea.setText("Input method text changed");
+    class CipherTextAreaListener implements MouseListener {
+        public void mouseClicked(MouseEvent e) {
+            if (cipherTextArea.getText().equals("Ciphertext")) {
+                cipherTextArea.setText("");
+                cipherTextArea.setForeground(Color.black);
+                cipherTextArea.setEditable(true);
+            }
         }
 
-        public void caretPositionChanged(InputMethodEvent event) {
-            cipherTextArea.setText("Caret position changed");
+        public void mouseEntered(MouseEvent e) {
+
+        }
+
+        public void mouseExited(MouseEvent e) {
+        }
+
+        public void mousePressed(MouseEvent e) {
+        }
+
+        public void mouseReleased(MouseEvent e) {
         }
     }
 
@@ -177,6 +207,7 @@ public class CaesarCipher {
             String encodedText = this.encodeText(plainTextArea.getText());
             cipherTextArea.setFont(new Font("Monospaced", Font.PLAIN, 18));
             cipherTextArea.setForeground(Color.black);
+            cipherTextArea.setEditable(true);
             cipherTextArea.setText(encodedText);
         }
 
