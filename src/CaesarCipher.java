@@ -90,7 +90,7 @@ public class CaesarCipher {
     }
 
     private JLabel buildShiftLabel() {
-        JLabel shiftLabel = new JLabel("Shift");
+        JLabel shiftLabel = new JLabel("Shift ");
         shiftLabel.setFont(new Font("Monospaced", Font.BOLD, 24));
         shiftLabel.setForeground(Color.white);
         return shiftLabel;
@@ -119,7 +119,7 @@ public class CaesarCipher {
     }
 
     private JLabel buildAToZLabel() {
-        aToZLabel = new JLabel("a " + RIGHT_ARROW + " a");
+        aToZLabel = new JLabel(" a " + RIGHT_ARROW + " a");
         aToZLabel.setFont(new Font("Monospaced", Font.ITALIC, 24));
         aToZLabel.setForeground(Color.white);
         return aToZLabel;
@@ -196,9 +196,9 @@ public class CaesarCipher {
                 shiftAmountLabel.setText(" " + String.valueOf(++shiftAmount) + " ");
 
                 if (shiftAmount >= 0) {
-                    aToZLabel.setText("a " + RIGHT_ARROW + " " + alphabet.charAt(shiftAmount));
+                    aToZLabel.setText(" a " + RIGHT_ARROW + " " + alphabet.charAt(shiftAmount));
                 } else {
-                    aToZLabel.setText("a " + RIGHT_ARROW + " " + alphabet.charAt(26 + shiftAmount));
+                    aToZLabel.setText(" a " + RIGHT_ARROW + " " + alphabet.charAt(26 + shiftAmount));
                 }
             }
         }
@@ -221,14 +221,28 @@ public class CaesarCipher {
                 char plainChar = plainText.charAt(i);
 
                 if (Character.isLetter(plainChar)) {
+                    boolean isUpperCase = Character.isUpperCase(plainChar);
+
+                    if (isUpperCase) {
+                        plainChar = Character.toLowerCase(plainChar);
+                    }
+
                     int plainIndex = alphabet.indexOf(plainChar);
                     int encodedIndex = plainIndex + shiftAmount;
 
                     if (encodedIndex < 26) {
-                        encodedText.add(alphabet.charAt(encodedIndex));
+                        if (isUpperCase) {
+                            encodedText.add(Character.toUpperCase(alphabet.charAt(encodedIndex)));
+                        } else {
+                            encodedText.add(alphabet.charAt(encodedIndex));
+                        }
                     } else {
                         encodedIndex = encodedIndex - 26;
-                        encodedText.add(alphabet.charAt(encodedIndex));
+                        if (isUpperCase) {
+                            encodedText.add(Character.toUpperCase(alphabet.charAt(encodedIndex)));
+                        } else {
+                            encodedText.add(alphabet.charAt(encodedIndex));
+                        }
                     }
                 } else {
                     encodedText.add(plainChar);
@@ -249,6 +263,7 @@ public class CaesarCipher {
             String decodedText = this.decodeText(cipherTextArea.getText());
             plainTextArea.setFont(new Font("Monospaced", Font.PLAIN, 18));
             plainTextArea.setForeground(Color.black);
+            plainTextArea.setEditable(true);
             plainTextArea.setText(decodedText);
         }
 
@@ -261,14 +276,28 @@ public class CaesarCipher {
                 char encodedChar = encodedText.charAt(i);
 
                 if (Character.isLetter(encodedChar)) {
+                    boolean isUpperCase = Character.isUpperCase(encodedChar);
+
+                    if (isUpperCase) {
+                        encodedChar = Character.toLowerCase(encodedChar);
+                    }
+
                     int encodedIndex = alphabet.indexOf(encodedChar);
                     int plainIndex = encodedIndex - shiftAmount;
 
                     if (plainIndex >= 0) {
-                        plainText.add(alphabet.charAt(plainIndex));
+                        if (isUpperCase) {
+                            plainText.add(Character.toUpperCase(alphabet.charAt(plainIndex)));
+                        } else {
+                            plainText.add(alphabet.charAt(plainIndex));
+                        }
                     } else {
                         plainIndex = plainIndex + 26;
-                        plainText.add(alphabet.charAt(plainIndex));
+                        if (isUpperCase) {
+                            plainText.add(Character.toUpperCase(alphabet.charAt(plainIndex)));
+                        } else {
+                            plainText.add(alphabet.charAt(plainIndex));
+                        }
                     }
                 } else {
                     plainText.add(encodedChar);
